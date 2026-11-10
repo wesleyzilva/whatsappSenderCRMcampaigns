@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WhatsApp Sender · Painel</title>
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--tx:#1b1f24;--mut:#6b7280;--bd:#e2e5ea;--ok:#15803d;--warn:#b45309;--err:#b91c1c;--pri:#0f766e;--prit:#fff;--bar:#e5e7eb}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1317;--card:#171c22;--tx:#e8eaed;--mut:#9aa3ad;--bd:#262d36;--ok:#4ade80;--warn:#fbbf24;--err:#f87171;--pri:#2dd4bf;--prit:#06201d;--bar:#2a323c}}
+:root{color-scheme:light dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1000px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:0}h2{font-size:14px;margin:0 0 10px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+.top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.badge{padding:3px 10px;border-radius:99px;font-size:13px;font-weight:600;border:1px solid var(--bd)}
+.on{color:var(--ok)}.off{color:var(--mut)}.w{color:var(--warn)}.e{color:var(--err)}
+button,select,input{font:inherit;color:inherit}
+button{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:7px 12px;cursor:pointer}
+button.p{background:var(--pri);color:var(--prit);border-color:var(--pri);font-weight:600}
+button.d{border-color:var(--err);color:var(--err)}
+button:disabled{opacity:.5;cursor:not-allowed}
+select,input[type=text],input[type=number]{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:6px 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.zap{border:1px solid var(--bd);border-radius:10px;padding:12px}
+.zap b{font-size:16px}.num{color:var(--mut);font-size:13px}
+.bar{height:8px;border-radius:99px;background:var(--bar);margin:8px 0 4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--pri)}
+.sm{font-size:13px;color:var(--mut)}
+.kpi{display:flex;gap:22px;flex-wrap:wrap}.kpi div b{display:block;font-size:22px}
+pre{margin:0;white-space:pre-wrap;word-break:break-word}
+#log{background:#0b0f13;color:#d1d5db;border-radius:8px;padding:10px;height:260px;overflow:auto;font:12px/1.4 ui-monospace,Consolas,monospace}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tabs button{border-radius:99px;padding:6px 14px}
+.tabs button.sel{background:var(--pri);color:var(--prit);border-color:var(--pri);font-weight:600}
+.tab{display:none}.tab.sel{display:block}
+.acao{border-left:4px solid var(--bd);padding:6px 10px;margin:6px 0;border-radius:4px;background:var(--bg)}
+.acao.alta{border-color:var(--err)}.acao.media{border-color:var(--warn)}.acao.info{border-color:var(--pri)}
+.acao b{display:block}
+.camp{border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:10px}
+.camp .bar{height:10px}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid var(--bd)}
+.cnt{display:flex;gap:16px;flex-wrap:wrap;margin:6px 0}.cnt span b{font-size:18px;margin-right:4px}
+table.t{border-collapse:collapse;width:100%}table.t td,table.t th{border-bottom:1px solid var(--bd);padding:5px 8px;text-align:left;font-size:13px}
+.txt{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:10px;max-height:60vh;overflow:auto;font:12px/1.4 ui-monospace,Consolas,monospace}
+.guia h3{margin:14px 0 4px;font-size:15px}.guia ul{margin:4px 0 8px;padding-left:20px}.guia li{margin:2px 0}
+textarea{width:100%;background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px;font:inherit;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media (max-width:760px){.two{grid-template-columns:1fr}}
+.tool{margin-bottom:6px;gap:6px}.tool button{padding:4px 9px}
+.chat{background:#e5ddd5;border-radius:10px;padding:12px;min-height:200px}@media (prefers-color-scheme:dark){.chat{background:#0b141a}}
+.bolha{background:#d9fdd3;color:#111;border-radius:8px;padding:8px 10px;max-width:92%;white-space:pre-wrap;word-break:break-word;box-shadow:0 1px 1px rgba(0,0,0,.15)}@media (prefers-color-scheme:dark){.bolha{background:#005c4b;color:#e9edef}}
+.bolha code{font-family:ui-monospace,Consolas,monospace}
+.tabela{max-height:300px;overflow:auto;border:1px solid var(--bd);border-radius:8px}
+.chip{padding:3px 10px;border-radius:99px;border:1px solid var(--bd);cursor:pointer;font-size:13px;background:var(--card)}.chip.sel{background:var(--pri);color:var(--prit);border-color:var(--pri)}
+dialog{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:12px;max-width:94vw}
+#qr{background:#000;color:#fff;padding:10px;font:9px/9px ui-monospace,Consolas,monospace;white-space:pre;overflow:auto;max-height:70vh}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <h1>WhatsApp Sender · Painel</h1>
+    <span id="st" class="badge off">carregando…</span>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button data-t="op" class="sel">Operação</button>
+    <button data-t="nova">Nova campanha</button>
+    <button data-t="cal">Calendário</button>
+    <button data-t="pro">Promoções</button>
+    <button data-t="pre">Preços</button>
+    <button data-t="msg">Mensagens</button>
+    <button data-t="cli">Clínica</button>
+    <button data-t="camp">Campanhas</button>
+    <button data-t="ges">Gestão (TPM)</button>
+    <button data-t="guia">Guia rápido</button>
+  </div>
+
+  <section class="tab sel" id="t-op">
+  <div class="card">
+    <h2>O que fazer agora</h2>
+    <div id="acoes" class="sm">carregando…</div>
+  </div>
+
+  <div class="card">
+    <h2>Operação</h2>
+    <div class="row">
+      <button class="p" id="ini">▶ Iniciar modo contínuo</button>
+      <button class="d" id="par">■ Parar com segurança</button>
+      <label class="sm">Modo <select id="modo"><option value="">padrão</option><option value="sequencial">sequencial</option><option value="paralelo">paralelo</option></select></label>
+      <label class="sm">DDD <input id="ddd" type="text" size="3" maxlength="2" placeholder="todos"></label>
+      <label class="sm"><input id="ign" type="checkbox"> enviar a qualquer horário (agora)</label>
+    </div>
+    <p class="sm" id="hor" style="margin:10px 0 0"></p>
+  </div>
+
+  <div class="card">
+    <h2>Resumo geral</h2>
+    <div class="kpi"><div><b id="k1">–</b><span class="sm">enviados</span></div><div><b id="k2">–</b><span class="sm">não têm WhatsApp</span></div><div><b id="k3">–</b><span class="sm">falhas</span></div></div>
+  </div>
+
+  <div class="card">
+    <div class="row" style="justify-content:space-between;margin-bottom:10px"><h2 style="margin:0">Zaps (números)</h2><button id="add">+ Adicionar zap</button></div>
+    <div class="grid" id="zaps"></div>
+  </div>
+
+  <div class="card">
+    <h2>Configuração</h2>
+    <div class="row">
+      <label class="sm">Margem de segurança <input id="mar" type="number" min="0" max="20" style="width:64px"></label>
+      <button id="smar">Salvar margem</button>
+      <span class="sm" id="lim"></span>
+    </div>
+    <div class="row" style="margin-top:10px"><label class="sm"><input id="hat" type="checkbox"> respeitar janelas de horário (editar as janelas: config/chips.json)</label></div>
+  </div>
+
+  <div class="card"><h2>Log</h2><div id="log"></div></div>
+  </section>
+
+  <section class="tab" id="t-nova">
+    <div class="card">
+      <h2>1 · Nome e mensagem</h2>
+      <div class="row" style="margin-bottom:10px"><label class="sm">Nome da campanha <input id="cnome" type="text" size="38" placeholder="ex.: Promoção Harmonização Novembro"></label></div>
+      <div class="row" style="margin-bottom:10px">
+        <label class="sm">Modelo pronto <select id="cmod"><option value="">— começar do zero —</option></select></label>
+        <label class="sm">Unidade <select id="cuni"></select></label>
+        <label class="sm">Promoção <select id="cpro"><option value="">nenhuma</option></select></label>
+        <label class="sm">Procedimento <select id="cprc"><option value="">nenhum</option></select></label>
+      </div>
+      <div class="two">
+        <div>
+          <div class="row tool">
+            <button type="button" data-f="*" title="Negrito"><b>B</b></button>
+            <button type="button" data-f="_" title="Itálico"><i>I</i></button>
+            <button type="button" data-f="~" title="Tachado"><s>S</s></button>
+            <button type="button" data-f="```" title="Monoespaçado">{ }</button>
+            <span class="sm">Inserir:</span>
+            <button type="button" data-v="{nome}">{nome}</button>
+            <button type="button" data-v="{saudacao}">{saudacao}</button>
+            <button type="button" data-v="{data}">{data}</button>
+            <button type="button" data-v="😊">😊</button><button type="button" data-v="✨">✨</button><button type="button" data-v="🦷">🦷</button><button type="button" data-v="📍">📍</button><button type="button" data-v="👉">👉</button>
+          </div>
+          <textarea id="cmsg" rows="12" placeholder="{saudacao}, {nome}! Tudo bem?&#10;&#10;Escreva aqui a mensagem. Use *negrito*, _itálico_ e links normalmente."></textarea>
+          <div class="sm"><span id="ccont">0</span> caracteres · <b>{nome}</b> vira o primeiro nome do contato (some sozinho se o contato não tiver nome).</div>
+        </div>
+        <div>
+          <div class="sm" style="margin-bottom:4px">Prévia (como aparece no WhatsApp)</div>
+          <div class="chat"><div class="bolha" id="cprev">…</div></div>
+          <div class="sm" id="cprevn" style="margin-top:6px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>2 · Para quem enviar</h2>
+      <div class="row" style="margin-bottom:8px">
+        <label><input type="radio" name="pmodo" value="filtro" checked> Contatos filtrados</label>
+        <label><input type="radio" name="pmodo" value="manual"> Escolher um a um</label>
+        <label><input type="radio" name="pmodo" value="numeros"> Colar números</label>
+      </div>
+      <div id="p-lista">
+        <div class="row" style="margin-bottom:8px">
+          <label class="sm">Buscar <input id="pq" type="text" size="22" placeholder="nome ou número"></label>
+          <label class="sm"><input id="pnome" type="checkbox"> só com nome</label>
+          <label class="sm"><input id="pocu" type="checkbox" checked> ocultar quem não pode receber</label>
+        </div>
+        <div class="row" id="pddds" style="margin-bottom:8px"></div>
+        <div class="row" style="margin-bottom:6px"><span class="sm" id="pinfo"></span><button type="button" id="ptodos">Marcar todos</button><button type="button" id="pnenhum">Desmarcar todos</button></div>
+        <div class="tabela"><table class="t" id="ptab"></table></div>
+      </div>
+      <div id="p-numeros" style="display:none">
+        <textarea id="pnums" rows="8" placeholder="Um por linha. Aceita:&#10;16 99721-4286&#10;(46) 99912-0042, Maria&#10;+55 11 98888-7777"></textarea>
+      </div>
+      <p class="sm" id="presumo" style="margin:10px 0 0"></p>
+    </div>
+
+    <div class="card">
+      <h2>3 · Quando enviar</h2>
+      <div class="row">
+        <label><input type="radio" name="qmodo" value="agora" checked> Salvar e iniciar agora</label>
+        <label><input type="radio" name="qmodo" value="agendar"> Agendar para <input id="qdata" type="datetime-local"></label>
+        <label><input type="radio" name="qmodo" value="salvar"> Só salvar a lista (envio manual depois)</label>
+      </div>
+      <div class="row" style="margin-top:8px"><label class="sm">Modo <select id="qzap"><option value="sequencial">sequencial (um zap por vez)</option><option value="paralelo">paralelo (todos juntos)</option></select></label></div>
+      <p class="sm">O envio respeita o teto de 48 por zap a cada 24h: se o público for maior que a capacidade do dia, a campanha continua nos dias seguintes. Para o agendamento funcionar, deixe este painel aberto e o computador ligado.</p>
+      <div id="cavisos" class="sm"></div>
+      <div id="ccfobox" class="acao alta" style="display:none"><b>Atenção: publicidade odontológica</b><span id="ccfotxt"></span>
+        <label style="display:block;margin-top:6px"><input type="checkbox" id="ccfo"> Já conferi as regras do CFO/CRO e quero enviar mesmo assim</label></div>
+      <div class="row"><button class="p" id="cgo">Criar campanha</button><span id="cres" class="sm"></span></div>
+    </div>
+
+    <div class="card">
+      <h2>Agendamentos</h2>
+      <div id="agenda" class="sm">carregando…</div>
+    </div>
+  </section>
+
+  <section class="tab" id="t-cli"><div id="cli-box" class="sm">carregando…</div></section>
+  <section class="tab" id="t-pre"><div id="pre-box" class="sm">carregando…</div></section>
+  <section class="tab" id="t-pro"><div id="pro-box" class="sm">carregando…</div></section>
+  <section class="tab" id="t-cal"><div id="cal-box" class="sm">carregando…</div></section>
+  <section class="tab" id="t-msg"><div id="msg-box" class="sm">carregando…</div></section>
+
+  <section class="tab" id="t-camp">
+    <div class="card">
+      <div class="row" style="justify-content:space-between;margin-bottom:10px"><h2 style="margin:0">Campanhas (as 3 mais recentes)</h2><button id="vtodas">Ver todas</button></div>
+      <p class="sm" style="margin-top:0">"Processado" = enviado + sem WhatsApp + falha. "Entregue" conta só os enviados. Uma campanha só está realmente 100% quando não há falhas nem pendentes.</p>
+      <div id="campanhas">carregando…</div>
+    </div>
+    <div class="card">
+      <h2>Convite para o grupo de promoções (Harmonização Orofacial · Pato Branco)</h2>
+      <p class="sm" style="margin-top:0">Cole o link de convite do grupo (WhatsApp › grupo › Convidar via link). O painel monta a lista a partir da campanha de Pato Branco, já sem blacklist e sem números sem WhatsApp. A regra de 1 mensagem por telefone/mês continua valendo.</p>
+      <div class="row"><input id="lgrupo" type="text" size="44" placeholder="https://chat.whatsapp.com/..."><label class="sm">DDD <input id="dgrupo" type="text" size="3" maxlength="2" value="46"></label><button class="p" id="bgrupo">Gerar lista do convite</button></div>
+      <pre class="txt" id="rgrupo" style="display:none;margin-top:10px"></pre>
+    </div>
+  </section>
+
+  <section class="tab" id="t-ges">
+    <div class="card">
+      <h2>Erros dos últimos 7 dias</h2>
+      <div id="erros" class="sm">carregando…</div>
+    </div>
+    <div class="card">
+      <div class="row" style="justify-content:space-between;margin-bottom:10px"><h2 style="margin:0">Relatório de gestão</h2><button class="p" id="bges">Gerar relatório</button></div>
+      <p class="sm" style="margin-top:0">Funil da campanha, vazão por dia, saúde dos zaps, perdas de tempo, erros mais frequentes e riscos com ação recomendada. Também fica salvo em logs/relatorio_gestao_AAAA-MM-DD.md.</p>
+      <pre class="txt" id="rges" style="display:none"></pre>
+    </div>
+  </section>
+
+  <section class="tab" id="t-guia">
+    <div class="card guia">
+      <h2>Rotina da secretária (5 minutos)</h2>
+      <ul>
+        <li>Abra a aba <b>Operação</b> e leia <b>O que fazer agora</b>: vermelho = precisa de ação, amarelo = atenção, azul = só informativo.</li>
+        <li>Se algum zap pedir QR: clique em <b>Conectar (QR)</b> no cartão do zap e escaneie com o celular daquele número (WhatsApp › Aparelhos conectados).</li>
+        <li>Clique em <b>▶ Iniciar modo contínuo</b> e deixe o computador ligado. Ele envia até o teto de cada zap, troca de zap sozinho e <b>encerra quando a campanha termina</b>.</li>
+        <li>No fim do dia, abra <b>Campanhas</b> para ver o progresso e avise o gestor se houver falhas ou pendências.</li>
+        <li>Se alguém responder "SAIR"/"não quero receber": anote o número em <b>dados/entrada/blacklist.txt</b> no mesmo dia.</li>
+      </ul>
+      <h2>O que cada aba mostra</h2>
+      <ul>
+        <li><b>Operação</b>: tarefas do dia, iniciar/parar, resumo geral, cada zap (número, situação, envios nas últimas 24h), margem de segurança e log ao vivo.</li>
+        <li><b>Nova campanha</b>: escreva a mensagem com negrito/itálico e variáveis ({nome}, {saudacao}), veja a prévia no formato WhatsApp, escolha o público (filtro por DDD, um a um ou números colados) e envie agora ou agende data/hora.</li>
+        <li><b>Campanhas</b>: as 3 listas mais recentes (enviados, sem WhatsApp, falhas, pendentes, previsão de término), devolver falhas à fila e gerar o convite do grupo.</li>
+        <li><b>Gestão (TPM)</b>: erros por tipo e relatório completo com riscos e recomendações.</li>
+      </ul>
+      <h2>Regras que o sistema aplica sozinho</h2>
+      <ul>
+        <li>Teto de envios por zap a cada 24h (limite − margem). Zap que atinge o teto é pulado; o próximo assume.</li>
+        <li>Zap desconectado ou em quarentena não é tentado (economiza tempo). Após 2 falhas seguidas de conexão o zap fica 6h em quarentena.</li>
+        <li>Quem está na blacklist nunca recebe. Quem já recebeu mensagem no mês não recebe outra no mesmo mês.</li>
+        <li>O modo contínuo não usa listas de meses anteriores (evita reenviar para quem já recebeu).</li>
+      </ul>
+      <h2>Menu de texto (03_disparar.ps1)</h2>
+      <p class="sm">Tudo isto também está no menu do PowerShell: <b>[A]</b> o que fazer agora, <b>[H]</b> guia, <b>[19]</b> fechamento da campanha, <b>[20]</b> retentar falhas, <b>[21]</b> relatório de gestão, <b>[22]</b> convite para o grupo.</p>
+    </div>
+  </section>
+</main>
+
+<dialog id="dlg">
+  <h2 id="dt">Conectar número</h2>
+  <p class="sm">No celular: WhatsApp › Aparelhos conectados › Conectar aparelho, e aponte para o código.</p>
+  <pre id="qr"></pre>
+  <div class="row" style="margin-top:10px;justify-content:flex-end"><button id="dc" class="d">Cancelar conexão</button><button id="dx">Fechar</button></div>
+</dialog>
+
+<script>
+const $ = s => document.querySelector(s);
+const post = (u, b) => fetch(u, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Painel': '1' }, body: JSON.stringify(b || {}) }).then(r => r.json());
+const dh = ms => new Date(ms).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+const txt = (el, t) => { if (el.textContent !== t) el.textContent = t; };
+let S = null, editando = false;
+
+async function atualizar() {
+  try { S = await (await fetch('/api/estado', { cache: 'no-store' })).json(); } catch { txt($('#st'), 'painel offline'); return; }
+  const st = $('#st');
+  st.className = 'badge ' + (S.rodando ? 'on' : 'off');
+  txt(st, S.rodando ? '● modo contínuo rodando' : '○ parado');
+  $('#ini').disabled = S.rodando; $('#par').disabled = !S.rodando;
+  const c = S.cfg;
+  txt($('#hor'), `Teto: ${c.ef} envios por zap a cada ${c.janelaHoras}h (limite ${c.limite} − margem ${c.margem}). Horário de envio: ${c.horarioAtivo ? c.horario : 'a qualquer hora'}. ` +
+    (c.horarioAtivo ? (c.dentro ? 'Agora está DENTRO do horário.' : `Agora está fora do horário — próxima abertura ${dh(c.proxima)}.`) : ''));
+  txt($('#k1'), S.tot.sent); txt($('#k2'), S.tot.skipped_not_registered); txt($('#k3'), S.tot.failed);
+  txt($('#lim'), `Uso real: ${c.ef} por zap.`);
+  renderAcoes(S.acoes || []);
+  if (!editando) { $('#mar').value = c.margem; $('#hat').checked = c.horarioAtivo; }
+  $('#add').disabled = !c.podeAdicionar;
+  const box = $('#zaps'); box.textContent = '';
+  for (const z of S.zaps) {
+    const d = document.createElement('div'); d.className = 'zap';
+    let situ = ['conectado', 'on'];
+    if (!z.ativo) situ = ['inativo', 'off'];
+    else if (z.bloqueadoAte) situ = ['pausado até ' + dh(Date.parse(z.bloqueadoAte)), 'e'];
+    else if (!z.sessao) situ = ['não conectado', 'w'];
+    else if (z.precisaQR) situ = ['precisa ler o QR de novo', 'e'];
+    const pct = Math.min(100, Math.round(z.enviados / z.cap * 100));
+    d.innerHTML = '<b></b> <span class="num"></span><div class="sm"></div><div class="bar"><i></i></div><div class="sm"></div>';
+    d.querySelector('b').textContent = z.rotulo;
+    d.querySelector('.num').textContent = z.numero ? '' : 'slot vazio — conecte um número para usar';
+    const s1 = d.querySelectorAll('.sm')[0]; s1.textContent = situ[0]; s1.className = 'sm ' + situ[1];
+    d.querySelector('i').style.width = pct + '%';
+    d.querySelectorAll('.sm')[1].textContent = `${z.enviados}/${z.cap} nas últimas ${c.janelaHoras}h` + (z.liberaEm ? ` · próxima vaga ${dh(z.liberaEm)}` : '');
+    const r = document.createElement('div'); r.className = 'row'; r.style.marginTop = '8px';
+    const b1 = document.createElement('button'); b1.textContent = 'Conectar (QR)'; b1.onclick = () => conectar(z);
+    const b2 = document.createElement('button'); b2.textContent = z.ativo ? 'Desativar' : 'Ativar';
+    b2.onclick = async () => { await post('/api/config', { zapId: z.id, zapAtivo: !z.ativo }); atualizar(); };
+    r.append(b1, b2); d.append(r); box.append(d);
+  }
+  const lg = $('#log'), fim = lg.scrollTop + lg.clientHeight >= lg.scrollHeight - 30;
+  lg.textContent = S.log.join('\n'); if (fim) lg.scrollTop = lg.scrollHeight;
+}
+
+$('#ini').onclick = async () => {
+  const r = await post('/api/iniciar', { modo: $('#modo').value, ddd: $('#ddd').value.trim(), ignorarHorario: $('#ign').checked });
+  if (r.erro) alert(r.erro); atualizar();
+};
+$('#par').onclick = async () => { if (confirm('Parar o modo contínuo? Ele fecha os navegadores com segurança (pode levar alguns segundos).')) { await post('/api/parar'); atualizar(); } };
+$('#smar').onclick = async () => { const r = await post('/api/config', { margem: $('#mar').value }); if (r.erro) alert(r.erro); editando = false; atualizar(); };
+$('#hat').onchange = async () => { await post('/api/config', { horarioAtivo: $('#hat').checked }); editando = false; atualizar(); };
+$('#mar').oninput = () => { editando = true; };
+$('#add').onclick = async () => { const n = prompt('Apelido do novo zap (opcional):', ''); if (n === null) return; const r = await post('/api/adicionar', { apelido: n }); if (r.erro) alert(r.erro); atualizar(); };
+
+let pollQR = null;
+async function conectar(z) {
+  if (S.rodando && !confirm('O modo contínuo está rodando. Conectar OUTRO zap é seguro, mas não conecte o mesmo zap que está enviando. Continuar?')) return;
+  const r = await post('/api/conectar', { id: z.id });
+  if (r.erro) { alert(r.erro); return; }
+  $('#dt').textContent = 'Conectar ' + z.rotulo; $('#qr').textContent = 'Abrindo o WhatsApp Web… aguarde o código aparecer.';
+  $('#dlg').showModal();
+  clearInterval(pollQR);
+  pollQR = setInterval(async () => {
+    const c = await (await fetch('/api/conexao', { cache: 'no-store' })).json();
+    $('#qr').textContent = c.txt || '…';
+    if (!c.rodando) { clearInterval(pollQR); atualizar(); }
+  }, 1500);
+}
+$('#dc').onclick = () => post('/api/cancelar-conexao');
+$('#dx').onclick = () => { clearInterval(pollQR); $('#dlg').close(); atualizar(); };
+
+function renderAcoes(lista) {
+  const box = $('#acoes'); box.textContent = '';
+  if (!lista.length) { box.textContent = '✅ Nada pendente. Operação saudável.'; return; }
+  const rot = { alta: 'URGENTE', media: 'ATENÇÃO', info: 'INFO' };
+  for (const a of lista) {
+    const d = document.createElement('div'); d.className = 'acao ' + a.nivel;
+    const b = document.createElement('b'); b.textContent = rot[a.nivel] + ' · ' + a.texto;
+    const t = document.createElement('span'); t.textContent = '→ ' + a.acao;
+    d.append(b, t); box.append(d);
+  }
+}
+
+const pill = { concluida: ['concluída', 'on'], concluida_com_ressalvas: ['concluída com ressalvas', 'w'], em_andamento: ['em andamento', ''], nao_iniciada: ['não iniciada', 'off'], aguardando_mes: ['aguarda o mês virar', 'w'], vazio: ['vazia', 'off'] };
+let todasCamp = false, CAMP = [];
+function cartaoCampanha(a) {
+  const d = document.createElement('div'); d.className = 'camp';
+  const p = pill[a.status] || ['?', 'off'];
+  const h = document.createElement('div'); h.className = 'row'; h.style.justifyContent = 'space-between';
+  const t = document.createElement('b'); t.textContent = a.arquivo;
+  const pl = document.createElement('span'); pl.className = 'pill ' + p[1]; pl.textContent = p[0];
+  h.append(t, pl); d.append(h);
+  const m = document.createElement('div'); m.className = 'sm'; m.textContent = `campanha ${a.campanha} · segmento ${a.segmento} · gerada em ${a.dataArquivo}`; d.append(m);
+  if (a.unicos > 0) {
+    const bar = document.createElement('div'); bar.className = 'bar'; const i = document.createElement('i'); i.style.width = a.pctProcessado + '%'; bar.append(i); d.append(bar);
+    const c = document.createElement('div'); c.className = 'cnt';
+    for (const [k, v, cl] of [['enviados', a.enviados, 'on'], ['sem WhatsApp', a.semWhatsapp, 'w'], ['falhas', a.falhas, 'e'], ['pendentes', a.pendentes, ''], ['aguardam o mês', a.bloqueadosMes || 0, 'off']]) {
+      if (k === 'aguardam o mês' && !v) continue;
+      const sp = document.createElement('span'); const b = document.createElement('b'); b.className = cl; b.textContent = v; sp.append(b, k); c.append(sp);
+    }
+    d.append(c);
+    const r = document.createElement('div'); r.className = 'sm'; r.textContent = `${a.unicos} contatos únicos · ${a.pctProcessado}% processado · ${a.pctEntregue}% entregue`; d.append(r);
+  }
+  if (a.lotes && a.lotes.length) {
+    const cur = a.lotes.find(l => l.processados < l.total);
+    const lt = document.createElement('div'); lt.className = 'sm'; lt.style.marginTop = '6px';
+    lt.textContent = `Lotes diários: ${a.lotes.length} · ` + (cur ? `lote atual ${cur.n}/${a.lotes.length} (${cur.processados}/${cur.total} do lote) · ` : 'todos concluídos · ') +
+      a.lotes.slice(0, 40).map(l => `L${l.n}: ${l.processados}/${l.total}`).join('  ');
+    d.append(lt);
+  }
+  const pp = document.createElement('div'); pp.style.marginTop = '6px'; pp.textContent = a.proximoPasso; d.append(pp);
+  const causas = Object.entries(a.falhasPorCausa || {});
+  if (causas.length) { const f = document.createElement('div'); f.className = 'sm'; f.textContent = 'Falhas: ' + causas.map(([k, v]) => `${v}× ${k}`).join(' · '); d.append(f); }
+  if (a.falhas > 0) {
+    const bt = document.createElement('button'); bt.className = 'd'; bt.style.marginTop = '8px'; bt.textContent = `Devolver ${a.falhas} falha(s) à fila`;
+    bt.onclick = async () => {
+      if (!confirm('Devolver as falhas à fila? Falhas do tipo "navegador travou" podem ter sido entregues — o contato pode receber duas vezes. Um backup do log é feito antes.')) return;
+      const r2 = await post('/api/retentar-falhas', { arquivo: a.arquivo }); alert(r2.erro || r2.texto || 'ok'); carregarCampanhas();
+    };
+    d.append(bt);
+  }
+  return d;
+}
+async function carregarCampanhas() {
+  try { CAMP = (await (await fetch('/api/campanhas', { cache: 'no-store' })).json()).campanhas || []; } catch { return; }
+  const box = $('#campanhas'); box.textContent = '';
+  const lista = todasCamp ? CAMP : CAMP.slice(0, 3);
+  if (!lista.length) box.textContent = 'Nenhuma lista em dados/listas.';
+  for (const a of lista) box.append(cartaoCampanha(a));
+  $('#vtodas').textContent = todasCamp ? 'Ver só as 3 mais recentes' : 'Ver todas';
+}
+$('#vtodas').onclick = () => { todasCamp = !todasCamp; carregarCampanhas(); };
+async function carregarErros() {
+  let e; try { e = await (await fetch('/api/erros', { cache: 'no-store' })).json(); } catch { return; }
+  const box = $('#erros'); box.textContent = '';
+  if (!e.total) { box.textContent = '✅ Nenhum erro nos últimos 7 dias.'; return; }
+  const p = document.createElement('div'); p.textContent = `${e.total} erro(s). Mais frequentes: ` + e.porTipo.map(([k, v]) => `${v}× ${k}`).join(' · '); box.append(p);
+  const tb = document.createElement('table'); tb.className = 't';
+  for (const x of e.ultimos) { const tr = tb.insertRow(); for (const v of [dh(Date.parse(x.ts)), x.tipo, x.evento, x.mensagem]) tr.insertCell().textContent = v; }
+  box.append(tb);
+}
+$('#bges').onclick = async () => {
+  const pre = $('#rges'); pre.style.display = 'block'; pre.textContent = 'Gerando…';
+  const r = await (await fetch('/api/gestao', { cache: 'no-store' })).json(); pre.textContent = r.texto || 'sem dados';
+};
+$('#bgrupo').onclick = async () => {
+  const pre = $('#rgrupo'); pre.style.display = 'block'; pre.textContent = 'Gerando…';
+  const r = await post('/api/convite-grupo', { link: $('#lgrupo').value, ddd: $('#dgrupo').value.trim() });
+  pre.textContent = r.erro || r.texto || 'sem resposta'; carregarCampanhas();
+};
+for (const b of document.querySelectorAll('#tabs button')) b.onclick = () => {
+  for (const x of document.querySelectorAll('#tabs button')) x.classList.toggle('sel', x === b);
+  for (const t of document.querySelectorAll('.tab')) t.classList.toggle('sel', t.id === 't-' + b.dataset.t);
+  if (b.dataset.t === 'camp') carregarCampanhas();
+  if (b.dataset.t === 'nova') abrirNova();
+  if (window.abrirAbaCRM && ['cal', 'pro', 'pre', 'msg', 'cli'].includes(b.dataset.t)) window.abrirAbaCRM(b.dataset.t);
+  if (b.dataset.t === 'ges') carregarErros();
+};
+
+// ── Nova campanha ────────────────────────────────────────────────────────────
+const NC = { ddds: new Set(), marcados: new Set(), desmarcados: new Set(), itens: [], inicializada: false, timer: null };
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+function zapHtml(t) {   // formatação do WhatsApp -> HTML (texto já escapado)
+  return esc(t)
+    .replace(/```([\s\S]+?)```/g, '<code>$1</code>')
+    .replace(/(^|[\s(])\*([^*\n]+)\*(?=[\s).,!?:;]|$)/g, '$1<b>$2</b>')
+    .replace(/(^|[\s(])_([^_\n]+)_(?=[\s).,!?:;]|$)/g, '$1<i>$2</i>')
+    .replace(/(^|[\s(])~([^~\n]+)~(?=[\s).,!?:;]|$)/g, '$1<s>$2</s>')
+    .replace(/(https?:\/\/[^\s<]+)/g, '<u>$1</u>');
+}
+function modoPublico() { return document.querySelector('input[name=pmodo]:checked').value; }
+function montarPublico() {
+  const modo = modoPublico();
+  const filtros = { ddds: [...NC.ddds], q: $('#pq').value.trim(), somenteComNome: $('#pnome').checked, ocultarImpedidos: $('#pocu').checked };
+  if (modo === 'numeros') return { modo, numeros: $('#pnums').value };
+  if (modo === 'manual') return { modo, ids: [...NC.marcados] };
+  return { modo, filtros, excluidos: [...NC.desmarcados] };
+}
+function agendarPrevia() { clearTimeout(NC.timer); NC.timer = setTimeout(previaCampanha, 400); }
+
+function atualizarMensagem() {
+  const t = $('#cmsg').value;
+  $('#ccont').textContent = t.length;
+  const hora = new Date().getHours();
+  const ex = t.replace(/\{nome_completo\}/gi, 'Maria Silva').replace(/\{nome\}/gi, 'Maria').replace(/\{saudacao\}/gi, hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite').replace(/\{data\}/gi, new Date().toLocaleDateString('pt-BR'));
+  $('#cprev').innerHTML = t.trim() ? zapHtml(ex) : '<span class="sm">A prévia aparece aqui…</span>';
+}
+function aplicarFormato(f) {
+  const ta = $('#cmsg'), a = ta.selectionStart, b = ta.selectionEnd, sel = ta.value.slice(a, b) || 'texto';
+  ta.setRangeText(f + sel + f, a, b, 'select'); ta.focus(); atualizarMensagem();
+}
+function inserir(v) { const ta = $('#cmsg'); ta.setRangeText(v, ta.selectionStart, ta.selectionEnd, 'end'); ta.focus(); atualizarMensagem(); agendarPrevia(); }
+for (const b of document.querySelectorAll('.tool button')) b.onclick = () => b.dataset.f ? aplicarFormato(b.dataset.f) : inserir(b.dataset.v);
+$('#cmsg').oninput = () => { atualizarMensagem(); agendarPrevia(); };
+
+async function carregarContatosCampanha() {
+  const p = new URLSearchParams({ ddds: [...NC.ddds].join(','), q: $('#pq').value.trim(), nome: $('#pnome').checked ? '1' : '0', ocultar: $('#pocu').checked ? '1' : '0' });
+  let r; try { r = await (await fetch('/api/contatos?' + p, { cache: 'no-store' })).json(); } catch { return; }
+  NC.itens = r.itens;
+  const dd = $('#pddds'); dd.textContent = '';
+  const lb = document.createElement('span'); lb.className = 'sm'; lb.textContent = 'DDD:'; dd.append(lb);
+  for (const d of r.ddds.slice(0, 14)) {
+    const c = document.createElement('button'); c.type = 'button'; c.className = 'chip' + (NC.ddds.has(d.ddd) ? ' sel' : ''); c.textContent = `${d.ddd} (${d.n})`;
+    c.onclick = () => { NC.ddds.has(d.ddd) ? NC.ddds.delete(d.ddd) : NC.ddds.add(d.ddd); carregarContatosCampanha(); agendarPrevia(); };
+    dd.append(c);
+  }
+  txt($('#pinfo'), `${r.filtrados} contato(s) no filtro de ${r.total}` + (r.filtrados > r.itens.length ? ` · mostrando os ${r.itens.length} primeiros (o envio considera todos os ${r.filtrados} no modo "filtrados")` : ''));
+  desenharTabela();
+}
+function marcado(c) { return modoPublico() === 'manual' ? NC.marcados.has(c.id) : !NC.desmarcados.has(c.id); }
+function desenharTabela() {
+  const tb = $('#ptab'); tb.textContent = '';
+  const h = tb.createTHead().insertRow(); for (const x of ['', 'Nome', 'Número', 'Situação']) { const th = document.createElement('th'); th.textContent = x; h.append(th); }
+  for (const c of NC.itens) {
+    const tr = tb.insertRow(); const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = marcado(c);
+    cb.onchange = () => {
+      if (modoPublico() === 'manual') cb.checked ? NC.marcados.add(c.id) : NC.marcados.delete(c.id);
+      else cb.checked ? NC.desmarcados.delete(c.id) : NC.desmarcados.add(c.id);
+      agendarPrevia();
+    };
+    tr.insertCell().append(cb);
+    tr.insertCell().textContent = c.nome || '(sem nome)';
+    tr.insertCell().textContent = `(${c.ddd}) ${c.numero.slice(2)}`;
+    tr.insertCell().textContent = c.blacklist ? 'blacklist' : c.jaEnviadoMes ? 'já recebeu neste mês' : 'ok';
+  }
+}
+$('#ptodos').onclick = () => { for (const c of NC.itens) { NC.marcados.add(c.id); NC.desmarcados.delete(c.id); } desenharTabela(); agendarPrevia(); };
+$('#pnenhum').onclick = () => { for (const c of NC.itens) { NC.marcados.delete(c.id); NC.desmarcados.add(c.id); } desenharTabela(); agendarPrevia(); };
+for (const r of document.querySelectorAll('input[name=pmodo]')) r.onchange = () => {
+  const n = modoPublico() === 'numeros'; $('#p-lista').style.display = n ? 'none' : ''; $('#p-numeros').style.display = n ? '' : 'none';
+  desenharTabela(); agendarPrevia();
+};
+for (const id of ['#pq', '#pnome', '#pocu']) $(id).addEventListener('input', () => { carregarContatosCampanha(); agendarPrevia(); });
+$('#pnums').oninput = agendarPrevia;
+
+async function previaCampanha() {
+  const r = await post('/api/campanha/previa', { mensagem: $('#cmsg').value, publico: montarPublico(), contexto: window.ctxCampanha ? window.ctxCampanha() : {} });
+  if (r.erro) { txt($('#presumo'), r.erro); return; }
+  if (window.mostrarAvisos) window.mostrarAvisos(r);
+  const rm = r.removidos, partes = [];
+  if (rm.blacklist) partes.push(`${rm.blacklist} na blacklist`); if (rm.jaEnviadoMes) partes.push(`${rm.jaEnviadoMes} já receberam neste mês`);
+  if (rm.invalidos) partes.push(`${rm.invalidos} número(s) inválido(s)`); if (rm.duplicados) partes.push(`${rm.duplicados} repetido(s)`);
+  const L = r.lotes;
+  txt($('#presumo'), `✅ ${r.enviaveis} contato(s) receberão a mensagem` + (partes.length ? ` · removidos automaticamente: ${partes.join(', ')}` : '') + (r.semNome ? ` · ${r.semNome} sem nome (a saudação fica sem nome)` : '') +
+    (r.enviaveis ? ` · 📦 ${L.lotes} lote(s) diário(s) de até ${L.porLote} (${L.zapsAtivos} zaps × ${L.porZap}); término em ~${L.lotes} dia(s)` + (L.zapsConectados < L.zapsAtivos ? ` · ⚠️ só ${L.zapsConectados} de ${L.zapsAtivos} zaps conectados agora` : '') : ''));
+  txt($('#cprevn'), r.enviaveis ? `Exemplo real para: ${r.exemplo.nome}` : '');
+  if (r.enviaveis) $('#cprev').innerHTML = zapHtml(r.exemplo.texto);
+}
+
+$('#cgo').onclick = async () => {
+  const acao = document.querySelector('input[name=qmodo]:checked').value;
+  const dataAg = $('#qdata').value;
+  if (acao === 'agendar' && !dataAg) { alert('Escolha a data e a hora do agendamento.'); return; }
+  if (acao === 'agora' && S && S.rodando && !confirm('O modo contínuo já está rodando. A campanha será criada e entrará na fila para iniciar quando ele terminar. Continuar?')) return;
+  if (!confirm(acao === 'agora' ? 'Criar a campanha e começar a enviar agora?' : acao === 'agendar' ? 'Criar a campanha e agendar o envio?' : 'Criar a lista?')) return;
+  $('#cgo').disabled = true; txt($('#cres'), 'Criando…');
+  const r = await post('/api/campanha/criar', {
+    nome: $('#cnome').value, mensagem: $('#cmsg').value, publico: montarPublico(), modo: $('#qzap').value,
+    contexto: window.ctxCampanha ? window.ctxCampanha() : {}, confirmoCFO: $('#ccfo').checked,
+    acao: acao === 'salvar' ? 'salvar' : acao, quando: dataAg ? new Date(dataAg).toISOString() : null,
+  });
+  $('#cgo').disabled = false;
+  if (r.erro) { txt($('#cres'), '❌ ' + r.erro); return; }
+  txt($('#cres'), `✅ Lista ${r.arquivo} criada com ${r.total} contato(s) em ${r.lotes.lotes} lote(s) diário(s).` + (acao === 'agora' ? ' Envio iniciando…' : acao === 'agendar' ? ' Agendada.' : ''));
+  carregarAgenda(); atualizar();
+};
+
+const stAg = { pendente: ['⏳ agendada', 'w'], rodando: ['▶ rodando', 'on'], concluido: ['✅ concluída', 'on'], interrompido: ['■ interrompida', 'w'], cancelado: ['cancelada', 'off'], erro: ['erro', 'e'] };
+async function carregarAgenda() {
+  let r; try { r = await (await fetch('/api/agendamentos', { cache: 'no-store' })).json(); } catch { return; }
+  const box = $('#agenda'); box.textContent = '';
+  if (!r.agendamentos.length) { box.textContent = 'Nenhuma campanha agendada ainda.'; return; }
+  const tb = document.createElement('table'); tb.className = 't';
+  for (const a of r.agendamentos) {
+    const tr = tb.insertRow(); const s = stAg[a.status] || [a.status, ''];
+    tr.insertCell().textContent = dh(Date.parse(a.quando));
+    tr.insertCell().textContent = a.nome;
+    const c = tr.insertCell(); c.textContent = s[0]; c.className = s[1];
+    const x = tr.insertCell();
+    if (a.status === 'pendente') { const b = document.createElement('button'); b.textContent = 'Cancelar'; b.onclick = async () => { await post('/api/agendamento/cancelar', { id: a.id }); carregarAgenda(); }; x.append(b); }
+  }
+  box.append(tb);
+}
+
+function abrirNova() {
+  if (window.carregarCRM) window.carregarCRM();
+  if (!NC.inicializada) { NC.inicializada = true; atualizarMensagem(); }
+  carregarContatosCampanha(); carregarAgenda(); agendarPrevia();
+}
+
+atualizar(); setInterval(atualizar, 3000);
+setInterval(() => { if ($('#t-nova').classList.contains('sel')) carregarAgenda(); }, 15000);
+{ const b = document.querySelector(`#tabs button[data-t="${location.hash.slice(1)}"]`); if (b) b.click(); }
+</script>
+<script src="/crm.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+node_modules/
+sessoes/
+.wwebjs_cache/
+__pycache__/
+*.pyc
+.vscode/
+logs/run_*.json
+logs/sent_log.json
+logs/*.log
+logs/backup/
+logs/relatorio_gestao_*.md
+config/trava_*.json
+dados/entrada/*.csv

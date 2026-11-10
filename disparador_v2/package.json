@@ -1,0 +1,23 @@
+{
+  "name": "disparador-whatsapp",
+  "version": "2.0.0",
+  "description": "Disparador de mensagens WhatsApp \u2014 Dra. Daiana Ferraz",
+  "main": "src/sender.js",
+  "scripts": {
+    "menu": "powershell -ExecutionPolicy Bypass -File iniciar.ps1",
+    "painel": "node src/painel.js",
+    "continuo": "node src/sender.js --continuo",
+    "enviar": "node src/sender.js",
+    "simular": "node src/sender.js --dry-run",
+    "status": "node src/sender.js --status",
+    "hoje": "node src/gestao.js --hoje",
+    "fechamento": "node src/gestao.js --fechamento",
+    "gestao": "node src/gestao.js --gestao",
+    "test": "node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "csv-parse": "^5.5.5",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.34.7"
+  }
+}
